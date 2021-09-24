@@ -40,16 +40,19 @@ else
     printf 'No virtual machine platform found'
 fi
 
-gpu=$(lspci | grep -i '.* vga .* nvidia .*')
-
-shopt -s nocasematch
-
-if [[ $gpu == *' nvidia '* ]]; then
-  printf 'Nvidia GPU is present:  %s\n' "$gpu"
-  pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
-else
-  printf 'Nvidia GPU is not present: %s\n' "$gpu"
+if [[ $(lshw -C display | grep vendor) =~ Nvidia ]]; then
+    printf 'Found Nvidia GPU, installing drivers...'
+    pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
+elif [[ $(lshw -C display | grep vendor) =~ Advanced Micro Devices ]]; then
+    printf 'Found AMD GPU, installing drivers...'
+    pacman -S --noconfirm xf86-video-amdgpu
+elif [[ $(lshw -C display | grep vendor) =~ Intel ]]; then
+    printf 'Found Intel GPU, installing drivers...'
+    pacman -S --noconfirm mesa
+else 
+    printf 'No GPU found'
 fi
+
 
 systemctl enable NetworkManager
 systemctl enable sshd
