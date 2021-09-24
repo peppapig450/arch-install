@@ -25,23 +25,14 @@ pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supp
 grub-install --target=i386-pc /dev/sda
 grub-mkconfig -o /boot/grub/grub.cfg
 
-echo "Are you on a virtual machine? (y/n)"
-read -s answer
-if [ $answer == y ]; then
-    echo "Select vm for vmware or vb for virtualbox"
-    read -s answer2
-    if [ $answer2 == vm ]; then
-        pacman -S --noconfirm open-vm-tools gtkmm3
-        systemctl enable vmtoolsd.service
-        systemctl enable vmware-vmblock-fuse.service
-    else 
-        pacman -S --noconfirm virtualbox-guest-utils
-        systemctl enable vboxservice.service 
-    fi
-else 
-	echo "Okay will not install packages for either."
-fi
-
+printf "Checking to see if you're on a virtual machine..."
+vmplat=$(systemd-detect-virt)
+if [[ $vmplat == "vmware" ]]; then
+    printf 'Found vmware platform, installing and enabling vmware tools'
+    pacman -S --noconfirm open-vm-tools gtkmm3 
+    systemctl enable vmtoolsd 
+    systemctl enable vmware-vmblock-fuse
+elif 
 gpu=$(lspci | grep -i '.* vga .* nvidia .*')
 
 shopt -s nocasematch
