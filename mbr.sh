@@ -32,7 +32,14 @@ if [[ $vmplat == "vmware" ]]; then
     pacman -S --noconfirm open-vm-tools gtkmm3 
     systemctl enable vmtoolsd 
     systemctl enable vmware-vmblock-fuse
-elif 
+elif [[ $vmplat == "oracle" ]]; then
+    printf 'Found virtualbox platform, installing and enabling vbox extensions'
+    pacman -S --noconfirm virtualbox-guest-utils
+    systemctl enable vboxservice
+else 
+    printf 'No virtual machine platform found'
+fi
+
 gpu=$(lspci | grep -i '.* vga .* nvidia .*')
 
 shopt -s nocasematch
