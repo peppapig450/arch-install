@@ -53,6 +53,15 @@ else
     printf 'No GPU found'
 fi
 
+if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
+    printf 'Found Intel CPU installing intel-ucode'
+    pacman -S --noconfirm intel-ucode
+elif [[ $(lscpu | grep Vendor) =~ AMDisbetter! ]] | [[ $(lscpu | grep Vendor) =~ AuthenticAMD ]];  then
+    printf 'Found AMD CPU installing amd-ucode'
+    pacman -S --noconfirm amd-ucode
+else 
+    printf 'No cpu found... or other error'
+fi
 
 systemctl enable NetworkManager
 systemctl enable sshd
