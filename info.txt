@@ -7,3 +7,6 @@ get partition boot flag is on
 fdisk -l | grep ' \*   ' | cut -d' ' -f1
 same thing as above
 `fdisk "-l" | awk '/dev/*/\*/ { print $1 }'`
+
+get efi partition name
+`fdisk "-l" | awk '/EFI/*/\System/ { print $1 }'`
