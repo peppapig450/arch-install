@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+RED='\033[0;31m'
+PURPLE='\033[1;35m'
+CYAN='\033[0;36m'
+PURP='\033[0;35m'
+CY='\033[1;35m'
+LG='\033[1;32m'
+
+title() {
+        clear
+        echo -e ${RED}"==========================="${NC}
+        echo -e ${LG}"Installing an Display Manager"${NC}
+        echo -e ${RED}"==========================="${NC}
+}
+
+ask() {
+    local prompt default reply
+
+    if [[ ${2:-} = 'Y' ]]; then
+        prompt='Y/n'
+        default='Y'
+    elif [[ ${2:-} = 'N' ]]; then
+        prompt='y/N'
+        default='N'
+    else
+        prompt='y/n'
+        default=''
+    fi
+
+    while true; do
+
+        # Ask the question (not using "read -p" as it uses stderr not stdout)
+        echo -n "$1 [$prompt] "
+
+        # Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
+        read -r reply </dev/tty
+
+        # Default?
+        if [[ -z $reply ]]; then
+            reply=$default
+        fi
+
+        # Check if the reply is valid
+        case "$reply" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+
+    done
+}
+
+function ly() {
+        echo -e "${BLUE
