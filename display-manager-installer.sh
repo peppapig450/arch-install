@@ -10,9 +10,12 @@ PURP='\033[0;35m'
 CY='\033[1;35m'
 LG='\033[1;32m'
 
+aur=$(ls /usr/bin/ | grep -e yay -e paru -e aura -e pacaur -e pakku -e pikaur -e trizen)
+use=$(/usr/bin/$aur | sed 's|.*/||')
+
 title() {
         clear
-        echo -e ${RED}"==========================="${NC}
+        echo -e ${RED}"==========================="${NC} 
         echo -e ${LG}"Installing an Display Manager"${NC}
         echo -e ${RED}"==========================="${NC}
 }
@@ -53,5 +56,10 @@ ask() {
     done
 }
 
-function ly() {
-        echo -e "${BLUE
+function cdm() {
+        echo -e ${BLUE}"CDM is a minimalistic, yet full-featured replacement for display managers like SLiM, SDDM and GDM that provides a fast, dialog-based login system without the overhead of the X Window System. Written in pure bash, CDM has almost no dependencies, yet supports multiple users/sessions and can start virtually any desktop environment or window manager."${NC}
+        if ask "Would you like to install cdm?"; then
+            use -S --noconfirm cdm 
+            dm=$(cat /etc/X11/default-display-manager | cut -c10-)
+            sudo systemctl disable $dm
+
