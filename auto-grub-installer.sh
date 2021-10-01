@@ -7,7 +7,7 @@ if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
         grub-install --target=i386-pc $(fdisk "-l" | awk '/dev/*/\*/ { print $1 }'
         grub-mkconfig -o /boot/grub/grub.cfg
 elif [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'gpt' ]]; then
-        grub-install --target=x86_64-efi --efi-directory=$(lsblk "-rno" name,mountpoint | awk -v pat="$var" '$0 ~ pat { print $2}') --bootloader-id=GRUB
+        grub-install --target=x86_64-efi --efi-directory=$(lsblk "-rno" name,mountpoint | awk -v pat="$(sudo fdisk "-l" | awk '/EFI/*/\System/ { print $1 }' | cut -c6-)" '$0 ~ pat { print $2}') --bootloader-id=GRUB
         grub-mkconfig -o /boot/grub/grub.cfg
 else
         echo -e "${RED}""Something has gone wrong chief ¯\_(ツ)_/¯""${NC}"
