@@ -1,10 +1,9 @@
 print if it is gpt or dos
 
-fdisk -l | grep -n -e dos -e gpt | awk '{print $3}' 
-
+fdisk -l | awk '/Disklabel/*/type:/ { print $3 }'
 
 get partition boot flag is on
 
 fdisk -l | grep ' \*   ' | cut -d' ' -f1
 same thing as above
-fdisk -l | awk '/dev/*/\*/ { print $1}'
+`fdisk "-l" | awk '/dev/*/\*/ { print $1 }'`
