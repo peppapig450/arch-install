@@ -9,4 +9,34 @@ same thing as above
 `fdisk "-l" | awk '/dev/*/\*/ { print $1 }'`
 
 get efi partition name
-`fdisk "-l" | awk '/EFI/*/\System/ { print $1 }'`
+`fdisk "-l" | awk '/EFI/*/\System/ { print $1 }'` | cut -c6-
+
+getting the actual efi partition
+var=`sudo fdisk "-l" | awk '/EFI/*/\System/ { print $1 }' | cut -c6-`
+out=`lsblk "-rno" name,mountpoint | awk -v pat="$var" '$0 ~ pat { print $2}'`
+echo $out
+
+
+var=`fdisk "-l" | awk '/EFI/*/\System/ { print $1 }' | cut -c6-`; lsblk "-rno" name,mountpoint | awk -v pat="$var" '$0 ~ pat { print $2}'
+
+var=`sudo fdisk "-l" | awk '/EFI/*/\System/ { print $1 }' | cut -c6-`; lsblk "-rno" name,mountpoint | awk -v pat="$var" '$0 ~ pat { print $2}'
+
+
+this one sometimes works
+
+#!/usr/bin/env bash
+
+var=`fdisk -l" | awk '/EFI/*/\System/ { print $1 }' | cut -c6-`
+loc=`lsblk "-rno" name,mountpoint | awk -v pat="$var" '$0 ~ pat { print $2}'`
+#echo $loc
+#eloc=lsblk "-rno" name,mountpoint | awk -v pat="$var" '$0 ~ pat { print $2}'
+#echo $eloc
+echo "grub-install --target=x86_64-efi --efi-directory=$loc --bootloader-id=GRUB"
+
+
+working i think
+
+#!/usr/bin/env bash
+var=`sudo fdisk "-l" | awk '/EFI/*/\System/ { print $1 }' | cut -c6-`; lsblk "-rno" name,mountpoint | awk -v pat="$var" '$0 ~ pat { print $2}' >> joe.txt 
+fs=`cat joe.txt`
+echo "grub-install --target=x86_64-efi --efi-directory=$fs --bootloader-id=GRUB"
