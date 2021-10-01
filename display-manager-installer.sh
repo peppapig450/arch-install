@@ -62,4 +62,7 @@ function cdm() {
             use -S --noconfirm cdm 
             dm=$(cat /etc/X11/default-display-manager | cut -c10-)
             sudo systemctl disable $dm
+            sudo systemctl enable cdm
+        else 
+            
 
