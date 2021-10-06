@@ -55,7 +55,7 @@ ask() {
 
 function aura() {
     echo -e "${BLUE}Aura is an AUR helper written in Haskell that has no file review and partial diff view.${NC}"
-    if ask "Do you want to install aura?"; then
+    if ask "Do you want to install Aura?"; then
         git clone https://aur.archlinux.org/aura.git && cd aura/ && makepkg -sri --noconfirm
     else 
         echo -e "${BLUE}Okay returning to the menu${NC}"
@@ -66,7 +66,7 @@ function aura() {
 
 function pakku() {
     echo -e "${BLUE}Pakku is an AUR helper written in Nim.${NC}"
-    if ask "Do you want to install pakku?"; then
+    if ask "Do you want to install Pakku?"; then
         git clone https://aur.archlinux.org/pakku-git.git && cd aura/ && makepkg -sri --noconfirm
     else
         echo -e "${BLUE}Okay returning to the menu${NC}"
@@ -77,7 +77,7 @@ function pakku() {
 
 function paru() {
     echo -e "${BLUE}Paru is an AUR helper written in Rust.${NC}"
-    if ask "Do you want to install paru?"; then
+    if ask "Do you want to install Paru?"; then
         git clone https://aur.archlinux.org/paru.git && cd paru/ && makepkg -sri --noconfirm
     else
         echo -e "${BLUE}Okay returning to the menu${NC}"
@@ -88,7 +88,7 @@ function paru() {
 
 function pikaur() {
     echo -e "${BLUE}Pikaur is an AUR helper written in Python.${NC}"
-    if ask "Do you want to install pikaur?"; then
+    if ask "Do you want to install Pikaur?"; then
         git clone https://aur.archlinux.org/pikaur.git && cd pikaur/ && makepkg -sri --noconfirm
     else 
         echo -e "${BLUE}Okay returning to the menu${NC}"
@@ -99,7 +99,7 @@ function pikaur() {
 
 function trizen() {
     echo -e "${BLUE}Trizen in an AUR helper written in Perl that has partial split package support.${NC}"
-    if ask "Do you want to install trizen?"; then
+    if ask "Do you want to install Trizen?"; then
         git clone https://aur.archlinux.org/trizen.git && cd trizen/ && makepkg -sri --noconfirm
     else
         echo -e "${BLUE}Okay returning to the menu${NC}"
@@ -110,7 +110,7 @@ function trizen() {
 
 function yay() {
     echo -e "${BLUE}Yay is an AUR helper written in Go.${NC}"
-    if ask "Do you want to install yay?"; then
+    if ask "Do you want to install Yay?"; then
         git clone https://aur.archlinux.org/yay.git && cd yay/ && makepkg -sri --noconfirm
     else
         echo -e "${BLUE}Okay returning to the menu${NC}"
