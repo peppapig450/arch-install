@@ -122,6 +122,8 @@ tbsm() {
             echo '[[ $XDG_VTNR -le 2 ]] && tbsm' >> ~/.bash_profile;
         elif [[ $shell == 'zsh' ]]; then
             echo '[[ $XDG_VTNR -le 2 ]] && tbsm' >> ~/.zprofile;
+          else 
+            echo ' [[ $XDG_VTNR -le '
         fi
     else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
