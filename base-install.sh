@@ -22,7 +22,7 @@ else
     printf "The passwords do not match!"
 fi
 
-pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw
+pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw man-db
 
 if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
         grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
@@ -97,10 +97,11 @@ usermod -aG wheel "$user"
 
 if [ "$pass1" = "$pass2" ]; then
     echo "${user}:${pass1}" | chpasswd
-else
+  else
     printf "The passwords do not match!"
 fi
 
-sed -i '82s/.//' /etc/sudoers
+ln=$(awk '{ if ( ($2 == "%wheel" && $4 == "ALL")) print NR;}' sudoers)
+sed -i ''"$ln"'s/^#//' sudoers
 
 printf "\e[1;32mDone! Type exit, umount -a and reboot.\e[0m"
