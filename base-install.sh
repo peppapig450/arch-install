@@ -22,11 +22,10 @@ else
     printf "The passwords do not match!"
 fi
 
-pacman -R --noconfirm iptables
-pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables-nft ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font
+pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font
 
 if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
-  grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
+        grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
         grub-mkconfig -o /boot/grub/grub.cfg
 elif [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'gpt' ]]; then
         pacman -S --noconfirm efibootmgr
@@ -37,42 +36,43 @@ else
 fi
 
 printf "Checking to see if you're on a virtual machine...\n"
-vmplat=$(systemd-detect-virt)
-if [[ $vmplat == "vmware" ]]; then
-    printf  'Installing and enabling vmware tools\n'
-    pacman -S --noconfirm open-vm-tools gtkmm3 
-    systemctl enable vmtoolsd 
-    systemctl enable vmware-vmblock-fuse
-elif [[ $vmplat == "oracle" ]]; then
-    printf 'Installing and enabling virtualbox extensions\n'
-    pacman -S --noconfirm virtualbox-guest-utils
-    systemctl enable vboxservice
+vmplat="$(systemd-detect-virt)"
+if [[ $(system-detect-virt) ]]; then
+  if [[ "$vmplat" == "vmware" ]]; then 
+      printf  'Installing and enabling vmware tools\n'
+      pacman -S --noconfirm open-vm-tools gtkmm3 
+      systemctl enable vmtoolsd 
+      systemctl enable vmware-vmblock-fuse
+  elif [[ "$vmplat" == "oracle" ]]; then
+      printf 'Installing and enabling virtualbox extensions\n'
+      pacman -S --noconfirm virtualbox-guest-utils
+      systemctl enable vboxservice
+  else 
+      printf 'No virtual machine platform found\n'
+  fi
 else 
-    printf 'No virtual machine platform found\n'
-fi
+  if [[ $(lshw -C display | grep vendor) =~ Nvidia ]]; then
+      printf 'Found Nvidia GPU, installing drivers...'
+      pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
+  elif [[ $(lshw -C display | grep vendor) =~ 'Advanced Micro Devices' ]]; then
+      printf 'Found AMD GPU, installing drivers...'
+      pacman -S --noconfirm xf86-video-amdgpu
+  elif [[ $(lshw -C display | grep vendor) =~ Intel ]]; then
+      printf 'Found Intel GPU, installing drivers...'
+      pacman -S --noconfirm mesa
+  else 
+      printf 'No GPU found'
+  fi
 
-if [[ $(lshw -C display | grep vendor) =~ Nvidia ]]; then
-    printf 'Found Nvidia GPU, installing drivers...'
-    pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
-elif [[ $(lshw -C display | grep vendor) =~ 'Advanced Micro Devices' ]]; then
-    printf 'Found AMD GPU, installing drivers...'
-    pacman -S --noconfirm xf86-video-amdgpu
-elif [[ $(lshw -C display | grep vendor) =~ Intel ]]; then
-    printf 'Found Intel GPU, installing drivers...'
-    pacman -S --noconfirm mesa
-else 
-    printf 'No GPU found'
-fi
-
-if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
-    printf 'Found Intel CPU installing intel-ucode\n'
-    pacman -S --noconfirm intel-ucode
-elif [[ $(lscpu | grep Vendor) =~ AMDisbetter! ]] | [[ $(lscpu | grep Vendor) =~ AuthenticAMD ]];  then
-    printf 'Found AMD CPU installing amd-ucode\n'
-    pacman -S --noconfirm amd-ucode
-else 
-    printf 'No cpu found... or other error\n'
-fi
+  if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
+      printf 'Found Intel CPU installing intel-ucode\n'
+      pacman -S --noconfirm intel-ucode
+  elif [[ $(lscpu | grep Vendor) =~ AMDisbetter! ]] | [[ $(lscpu | grep Vendor) =~ AuthenticAMD ]];  then
+      printf 'Found AMD CPU installing amd-ucode\n'
+      pacman -S --noconfirm amd-ucode
+  else 
+      printf 'No cpu found... or other error\n'
+  fi
 
 systemctl enable NetworkManager
 systemctl enable sshd
@@ -89,10 +89,10 @@ read -s pass1
 echo "Re-enter the password: "
 read -s pass2
 
-useradd -m ${user}
-usermod -aG wheel ${user}
+useradd -m "$user"
+usermod -aG wheel "$user"
 
-if [ $pass1 = $pass2 ]; then
+if [ "$pass1" = "$pass2" ]; then
     echo "${user}:${pass1}" | chpasswd
 else
     printf "The passwords do not match!"
