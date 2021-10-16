@@ -22,7 +22,7 @@ else
     printf "The passwords do not match!"
 fi
 
-pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font
+pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw
 
 if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
         grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
@@ -37,7 +37,7 @@ fi
 
 printf "Checking to see if you're on a virtual machine...\n"
 vmplat="$(systemd-detect-virt)"
-if [[ $(system-detect-virt) ]]; then
+if [[ $(systemd-detect-virt) ]]; then
     if [[ "$vmplat" == "vmware" ]]; then 
         printf  'Installing and enabling vmware tools\n'
         pacman -S --noconfirm open-vm-tools gtkmm3 
