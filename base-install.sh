@@ -63,7 +63,9 @@ else
     else 
         printf 'No GPU found'
     fi
+fi
 
+if [[ -z $(systemd-detect-virt) ]]; then
     if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
         printf 'Found Intel CPU installing intel-ucode\n'
         pacman -S --noconfirm intel-ucode
