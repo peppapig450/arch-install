@@ -38,41 +38,41 @@ fi
 printf "Checking to see if you're on a virtual machine...\n"
 vmplat="$(systemd-detect-virt)"
 if [[ $(system-detect-virt) ]]; then
-  if [[ "$vmplat" == "vmware" ]]; then 
-      printf  'Installing and enabling vmware tools\n'
-      pacman -S --noconfirm open-vm-tools gtkmm3 
-      systemctl enable vmtoolsd 
-      systemctl enable vmware-vmblock-fuse
-  elif [[ "$vmplat" == "oracle" ]]; then
-      printf 'Installing and enabling virtualbox extensions\n'
-      pacman -S --noconfirm virtualbox-guest-utils
-      systemctl enable vboxservice
-  else 
-      printf 'No virtual machine platform found\n'
-  fi
+    if [[ "$vmplat" == "vmware" ]]; then 
+        printf  'Installing and enabling vmware tools\n'
+        pacman -S --noconfirm open-vm-tools gtkmm3 
+        systemctl enable vmtoolsd 
+        systemctl enable vmware-vmblock-fuse
+    elif [[ "$vmplat" == "oracle" ]]; then
+        printf 'Installing and enabling virtualbox extensions\n'
+        pacman -S --noconfirm virtualbox-guest-utils
+        systemctl enable vboxservice
+    else 
+        printf 'No virtual machine platform found\n'
+    fi
 else 
-  if [[ $(lshw -C display | grep vendor) =~ Nvidia ]]; then
-      printf 'Found Nvidia GPU, installing drivers...'
-      pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
-  elif [[ $(lshw -C display | grep vendor) =~ 'Advanced Micro Devices' ]]; then
-      printf 'Found AMD GPU, installing drivers...'
-      pacman -S --noconfirm xf86-video-amdgpu
-  elif [[ $(lshw -C display | grep vendor) =~ Intel ]]; then
-      printf 'Found Intel GPU, installing drivers...'
-      pacman -S --noconfirm mesa
-  else 
-      printf 'No GPU found'
-  fi
+    if [[ $(lshw -C display | grep vendor) =~ Nvidia ]]; then
+        printf 'Found Nvidia GPU, installing drivers...'
+        pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
+    elif [[ $(lshw -C display | grep vendor) =~ 'Advanced Micro Devices' ]]; then
+        printf 'Found AMD GPU, installing drivers...'
+        pacman -S --noconfirm xf86-video-amdgpu
+    elif [[ $(lshw -C display | grep vendor) =~ Intel ]]; then
+        printf 'Found Intel GPU, installing drivers...'
+        pacman -S --noconfirm mesa
+    else 
+        printf 'No GPU found'
+    fi
 
-  if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
-      printf 'Found Intel CPU installing intel-ucode\n'
-      pacman -S --noconfirm intel-ucode
-  elif [[ $(lscpu | grep Vendor) =~ AMDisbetter! ]] | [[ $(lscpu | grep Vendor) =~ AuthenticAMD ]];  then
-      printf 'Found AMD CPU installing amd-ucode\n'
-      pacman -S --noconfirm amd-ucode
-  else 
-      printf 'No cpu found... or other error\n'
-  fi
+    if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
+        printf 'Found Intel CPU installing intel-ucode\n'
+        pacman -S --noconfirm intel-ucode
+    elif [[ $(lscpu | grep Vendor) =~ AMDisbetter! ]] || [[ $(lscpu | grep Vendor) =~ AuthenticAMD ]];  then
+        printf 'Found AMD CPU installing amd-ucode\n'
+        pacman -S --noconfirm amd-ucode
+    else 
+        printf 'No cpu found... or other error\n'
+    fi
 fi
 
 systemctl enable NetworkManager
