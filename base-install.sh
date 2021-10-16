@@ -73,6 +73,7 @@ else
   else 
       printf 'No cpu found... or other error\n'
   fi
+fi
 
 systemctl enable NetworkManager
 systemctl enable sshd
