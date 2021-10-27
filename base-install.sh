@@ -101,7 +101,7 @@ if [ "$pass1" = "$pass2" ]; then
     printf "The passwords do not match!"
 fi
 
-ln=$(awk '{ if ( ($2 == "%wheel" && $4 == "ALL")) print NR;}' sudoers)
-sed -i ''"$ln"'s/^#//' sudoers
+ln=$(awk '{ if ( ($2 == "%wheel" && $4 == "ALL")) print NR;}' /etc/sudoers)
+sed -i ''"$ln"'s/^#//' /etc/sudoers
 
 printf "\e[1;32mDone! Type exit, umount -a and reboot.\e[0m"
