@@ -12,12 +12,12 @@ echo "arch" >>/etc/hostname
 echo "127.0.0.1 localhost" >>/etc/hosts
 echo "::1       localhost" >>/etc/hosts
 echo "127.0.1.1 arch.localdomain arch" >>/etc/hosts
-echo "Please enter password to use for root: "
-read -s rootpass
-echo "Please repeat the same password: "
-read -s rootpass2
-if [ $rootpass = $rootpass2 ]; then
-    echo "root:${rootpass}" | chpasswd
+
+read -s -p "Please enter the password to use for root: " rootpass
+echo 
+read -s -p "Please repeat the same password: " rootpass2
+if [ "$rootpass" = "$rootpass2" ]; then
+    echo "root:$rootpass" | chpasswd
 else
     printf "The passwords do not match!"
 fi
