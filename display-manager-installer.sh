@@ -10,12 +10,8 @@ PURP='\033[0;35m'
 CY='\033[1;35m'
 LG='\033[1;32m'
 
-#aur=$(ls /usr/bin/ | grep -e yay -e paru -e aura -e pacaur -e pakku -e pikaur -e trizen)
-use=$(/usr/bin/$(ls /usr/bin/ | grep -e yay -e paru -e aura -e pacaur -e pakku -e pikaur -e trizen) | sed 's|.*/||')
-
+aur=$(find /usr/bin -type f | awk -F/ '/paru/ || /yay/ || /aura/ || /pacaur/ || /pakku/ || /trizen/ || /pikaur/ {print $4}')
 shell=$(ps -p $$ | awk 'FNR==2 { print $4 }')
-
-dir=$(pwd)
 
 title() {
     clear
@@ -63,11 +59,12 @@ ask() {
 cdm() {
     echo -e ${BLUE}"CDM is a minimalistic, yet full-featured replacement for display managers like SLiM, SDDM and GDM written in pure Bash."${NC}
     if ask "Would you like to install CDM?"; then
-      $use -S --noconfirm cdm 
+      "$aur" -S --noconfirm cdm 
       if [[ -d /etc/X11/default-display-manager ]]; then
-        sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+        sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+      else 
+        sudo systemctl enable cdm
       fi
-      sudo systemctl enable cdm
     else 
       echo -e ${BLUE}"Okay returning to the menu"${NC}
       sleep 1
@@ -78,16 +75,16 @@ cdm() {
 ctdm() {
     echo -e ${BLUE}"Console TDM is an extension for xorg-xinit written in pure Bash."${NC}
     if ask "Would you like to install Console TDM?"; then
-        $use -S --noconfirm console-tdm xorg-xinit
+        "$aur" -S --noconfirm console-tdm xorg-xinit
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
         fi
         if [[ $shell == 'bash' ]]; then
             echo 'source /usr/bin/tdm' >> ~/.bash_profile
         elif [[ $shell == 'zsh' ]]; then
             echo 'bash /usr/bin/tdm' >> ~/.zprofile
         fi
-        cp $dir'/xinitrc' ~/.xinitrc
+        cp $(pwd)'/xinitrc' ~/.xinitrc
         sed -i '/tdm/ s/^#//' ~/.xinitrc
     else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
@@ -99,12 +96,13 @@ ctdm() {
 ly() {
     echo -e ${BLUE}"Ly is a lightweight TUI (ncurses-like) display manager for Linux and BSD."${NC}
     if ask "Would you like to install Ly?"; then
-        $use -S --noconfirm ly
+        "$aur" -S --noconfirm ly
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+        else
+          sudo systemctl enable ly
         fi
-        sudo systemctl enable ly
-    else
+      else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
         sleep 1
         title
@@ -114,7 +112,7 @@ ly() {
 tbsm() {
     echo -e ${BLUE}"TBSM is a Bash session or application launcher with no ncurses or dialog depencies. Supports X and Wayland sessions."${NC}
     if ask "Would you like to install tbsm?"; then
-        $use -S --noconfirm tbsm
+        "$aur" -S --noconfirm tbsm
         if [[ -d /etc/X11/default-display-manager ]]; then
             sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
         fi
@@ -135,12 +133,13 @@ tbsm() {
 entrance() {
     echo -e ${BLUE}"Entrance is the display manager for Enlightenment."${NC}
     if ask "Would you like to install Entrance?"; then
-        $use -S --noconfirm entrance-git
+        "$aur" -S --noconfirm entrance-git
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+        else 
+          sudo systmectl enable entrance
         fi
-        sudo systemctl enable entrance
-    else
+      else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
         sleep 1
         title
@@ -152,10 +151,11 @@ gdm() {
     if ask "Would you like to install GDM?"; then
         sudo pacman -S --noconfirm gdm
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+            sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+        else
+          sudo systemctl enable gdm
         fi
-        sudo systemctl enable gdm
-    else
+      else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
         sleep 1
         title
@@ -167,7 +167,7 @@ lightdm() {
     if ask "Would you like to install LightDM?"; then
         sudo pacman -S --noconfirm lightdm xorg-server lightdm-gtk-greeter lightdm-gtk-greeter-settings
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
         fi
         sudo systemctl enable lightdm
         sudo sed -i 's/#greeter-session=.*/greeter-session=lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
@@ -183,10 +183,11 @@ lxdm() {
     if ask "Would you like to install LXDM"; then
         sudo pacman -S --noconfirm lxdm
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+        else 
+          sudo systemctl enable lxdm
         fi
-        sudo systemctl enable lxdm
-    else
+      else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
         sleep 1
         title
@@ -198,10 +199,11 @@ sddm() {
     if ask "Would you like to install SDDM"; then
         sudo pacman -S --noconfirm sddm sddm-kce
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable sddm
+        else 
+          sudo systemctl enable sddm
         fi
-        sudo systemctl enable sddm
-    else
+      else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
         sleep 1
         title 
@@ -214,13 +216,14 @@ xdm() {
         if ask "Would you like to install the Arch Linux theme for XDM?"; then
             sudo pacman -S --noconfirm xdm-archlinux
             if [[ -d /etc/X11/default-display-manager ]]; then
-                sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+                sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable xdm-archlinux
+            else 
+              sudo systemctl enable xdm-archlinux
             fi
-            sudo systemctl enable xdm-archlinux
         else
             sudo pacman -S --noconfirm xorg-xdm
             if [[ -d /etc/X11/default-display-manager ]]; then
-                sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
+                sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable xdm
             fi
             sudo systemctl enable xdm
         fi
