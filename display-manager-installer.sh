@@ -61,7 +61,7 @@ cdm() {
     if ask "Would you like to install CDM?"; then
       "$aur" -S --noconfirm cdm 
       if [[ -d /etc/X11/default-display-manager ]]; then
-        sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+        sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable cdm
       else 
         sudo systemctl enable cdm
       fi
@@ -98,7 +98,7 @@ ly() {
     if ask "Would you like to install Ly?"; then
         "$aur" -S --noconfirm ly
         if [[ -d /etc/X11/default-display-manager ]]; then
-          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable ly
         else
           sudo systemctl enable ly
         fi
@@ -114,13 +114,12 @@ tbsm() {
     if ask "Would you like to install tbsm?"; then
         "$aur" -S --noconfirm tbsm
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(cat /etc/X11/default-display-manager | cut -c10-)
-        fi
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)            fi
         if [[ $shell == 'bash' ]]; then
             echo '[[ $XDG_VTNR -le 2 ]] && tbsm' >> ~/.bash_profile;
         elif [[ $shell == 'zsh' ]]; then
             echo '[[ $XDG_VTNR -le 2 ]] && tbsm' >> ~/.zprofile;
-          else 
+        else 
             echo ' [[ $XDG_VTNR -le '
         fi
     else
@@ -135,11 +134,11 @@ entrance() {
     if ask "Would you like to install Entrance?"; then
         "$aur" -S --noconfirm entrance-git
         if [[ -d /etc/X11/default-display-manager ]]; then
-          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable entrance
         else 
-          sudo systmectl enable entrance
+          sudo systemctl enable entrance
         fi
-      else
+    else
         echo -e ${BLUE}"Okay returning to the menu"${NC}
         sleep 1
         title
@@ -151,7 +150,7 @@ gdm() {
     if ask "Would you like to install GDM?"; then
         sudo pacman -S --noconfirm gdm
         if [[ -d /etc/X11/default-display-manager ]]; then
-            sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+            sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable gdm
         else
           sudo systemctl enable gdm
         fi
