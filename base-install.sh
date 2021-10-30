@@ -8,19 +8,20 @@ hwclock --systohc
 sed -i '177s/.//' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >>/etc/locale.conf
-echo "arch" >>/etc/hostname
+read -p "What hostname would you like to use: " host 
+echo ${host} >>/etc/hostname
 echo "127.0.0.1 localhost" >>/etc/hosts
 echo "::1       localhost" >>/etc/hosts
-echo "127.0.1.1 arch.localdomain arch" >>/etc/hosts
+echo "127.0.1.1 ${host}.localdomain ${host}" >>/etc/hosts
 
 read -s -p "Please enter the password to use for root: " rootpass
 echo 
 read -s -p "Please repeat the same password: " rootpass2
 echo 
-if [ "$rootpass" == "$rootpass2" ]; then
+if [[ "$rootpass" == "$rootpass2" ]]; then
     echo "root:$rootpass" | chpasswd
 else
-    echo "The passwords do not match!"
+    printf "The passwords do not match!"
 fi
 
 pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw man-db
@@ -36,16 +37,13 @@ else
         echo -e "${RED}""Something has gone wrong chief ¯\_(ツ)_/¯""${NC}"
 fi
 
-printf "Checking to see if you're on a virtual machine...\n"
 vmplat="$(systemd-detect-virt)"
 if [[ $(systemd-detect-virt) ]]; then
-    if [[ "$vmplat" == "vmware" ]]; then 
-        printf  'Installing and enabling vmware tools\n'
+    if [[ "$vmplat" == "vmware" ]]; then
         pacman -S --noconfirm open-vm-tools gtkmm3 
         systemctl enable vmtoolsd 
         systemctl enable vmware-vmblock-fuse
     elif [[ "$vmplat" == "oracle" ]]; then
-        printf 'Installing and enabling virtualbox extensions\n'
         pacman -S --noconfirm virtualbox-guest-utils
         systemctl enable vboxservice
     else 
