@@ -1,15 +1,5 @@
 #!/usr/bin/env bash
 
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'
-RED='\033[0;31m'
-PURPLE='\033[1;35m'
-CYAN='\033[0;36m'
-PURP='\033[0;35m'
-CY='\033[1;35m'
-LG='\033[1;32m'
-
 aur=$(find /usr/bin -type f | awk -F/ '/paru/ || /yay/ || /aura/ || /pacaur/ || /pakku/ || /trizen/ || /pikaur/ {print $4}')
 shell=$(ps -p $$ | awk 'FNR==2 { print $4 }')
 
@@ -182,7 +172,7 @@ lxdm() {
     if ask "Would you like to install LXDM"; then
         sudo pacman -S --noconfirm lxdm
         if [[ -d /etc/X11/default-display-manager ]]; then
-          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)
+          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager) && sudo systemctl enable lxdm
         else 
           sudo systemctl enable lxdm
         fi

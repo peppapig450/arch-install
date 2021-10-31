@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-NC='\033[0m'
-RED='\033[0;31m'
-
+. color.sh
 # Define functions
-setpass() {
+
+# function to set root password
+setrpass() {
 	read -s -p "Enter the password you want to use for root: " rootpass
 	echo
 	read -s -p "Please repeat the password: " rootpass2
 	echo
 	if [[ -z "$rootpass" ]] || [[ -z "$rootpass2" ]]; then
-		printf "%s\n" 'Either one or both of the passwords were empty, please try again.'
+		printf "%s\n" "${RED}Either one or both of the passwords were empty, please try again.${normal}"
 		sleep 4
 		return 420
 	elif [[ "$rootpass" != "$rootpass2" ]]; then
@@ -20,6 +20,41 @@ setpass() {
 	else
 		printf "root:${rootpass}" | chpasswd
 		return 0
+	fi
+}
+
+# function to set user password
+setupass() {
+	read -p "Enter the name of the user you would like to create: " username
+	echo
+	read -s -p "Enter the password you would like to use for ${username}: " userpass
+	echo
+	read -s -p "Please repeat the password: " userpass2
+	echo
+	if [[ -z "$userpass" ]] || [[ -z "$userpasss2" ]]; then
+		printf "%s\n" "${RED}Either one of the passwords, or both were empty, please make sure to type something!${normal}"
+		sleep 4
+		return 13
+	elif [[ -z "$username" ]]; then
+		printf "%s\n" "${RED}The username is empty, please make sure to type something!${normal}"
+		sleep 4
+		return 3
+	elif [[ "$userpass" -ne "$userpass2" ]]; then
+		printf "%s\n" "${RED}The passwords do not match, please try again.${NORMAL}"
+		sleep 4
+		return 62
+	else
+		awk -F: '{print $1}' /etc/passwd | while IFS="" read -r f || [ -n "$f" ]; do
+			if [[ "$username" == "$f" ]]; then
+				printf "%s\n" "${RED}That username already exists! Try another one.${normal}"
+				return 16
+			else
+				useradd -m "$username"
+				usermod -aG wheel "$username"
+				printf "${username}:${userpass}" | chpaswd
+				return 0
+			fi
+		done
 	fi
 }
 
@@ -34,10 +69,10 @@ echo "127.0.0.1 localhost" >>/etc/hosts
 echo "::1       localhost" >>/etc/hosts
 echo "127.0.1.1 ${host}.localdomain ${host}" >>/etc/hosts
 
-setpass
+setrpass
 until [ $? -eq 0 ]; do
 	clear
-	setpass
+	setrpass
 done
 
 pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel linux-headers avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw man-db
@@ -100,21 +135,11 @@ systemctl enable fstrim.timer
 systemctl enable firewalld
 systemctl enable acpid
 
-echo "Enter the user you want to create: "
-read user
-echo "What password do you want to use for this user? "
-read -s pass1
-echo "Re-enter the password: "
-read -s pass2
-
-useradd -m "$user"
-usermod -aG wheel "$user"
-
-if [ "$pass1" = "$pass2" ]; then
-	echo "${user}:${pass1}" | chpasswd
-else
-	printf "The passwords do not match!"
-fi
+setupass
+until [ $? -eq 0 ]; do
+	clear
+	setupass
+done
 
 ln=$(awk '{ if ( ($2 == "%wheel" && $4 == "ALL")) print NR;}' /etc/sudoers)
 sed -i ''"$ln"'s/^#//' /etc/sudoers
