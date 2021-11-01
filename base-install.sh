@@ -5,14 +5,14 @@
 
 # function to set root password
 setrpass() {
-	read -s -p "Enter the password you want to use for root: " rootpass
+	read -r -s -p "Enter the password you want to use for root: " rootpass
 	echo
-	read -s -p "Please repeat the password: " rootpass2
+	read -r -s -p "Please repeat the password: " rootpass2
 	echo
 	if [[ -z "$rootpass" ]] || [[ -z "$rootpass2" ]]; then
-		printf "%s\n" "${RED}Either one or both of the passwords were empty, please try again.${normal}"
+		printf "%s\n" "${RED}Either one or both of the passwords were empty, please try again.${NORMAL}"
 		sleep 4
-		return 420
+		return 42
 	elif [[ "$rootpass" != "$rootpass2" ]]; then
 		printf "%s\n" 'The passwords do not match, please try again.'
 		sleep 4
@@ -25,18 +25,18 @@ setrpass() {
 
 # function to set user password
 setupass() {
-	read -p "Enter the name of the user you would like to create: " username
+	read -r -p "Enter the name of the user you would like to create: " username
 	echo
-	read -s -p "Enter the password you would like to use for ${username}: " userpass
+	read -r -s -p "Enter the password you would like to use for ${username}: " userpass
 	echo
-	read -s -p "Please repeat the password: " userpass2
+	read -r -s -p "Please repeat the password: " userpass2
 	echo
-	if [[ -z "$userpass" ]] || [[ -z "$userpasss2" ]]; then
-		printf "%s\n" "${RED}Either one of the passwords, or both were empty, please make sure to type something!${normal}"
+	if [[ -z "$userpass" ]] || [[ -z "$userpass2" ]]; then
+		printf "%s\n" "${RED}Either one of the passwords, or both were empty, please make sure to type something!${NORMAL}"
 		sleep 4
 		return 13
 	elif [[ -z "$username" ]]; then
-		printf "%s\n" "${RED}The username is empty, please make sure to type something!${normal}"
+		printf "%s\n" "${RED}The username is empty, please make sure to type something!${NORMAL}"
 		sleep 4
 		return 3
 	elif [[ "$userpass" -ne "$userpass2" ]]; then
@@ -46,7 +46,7 @@ setupass() {
 	else
 		awk -F: '{print $1}' /etc/passwd | while IFS="" read -r f || [ -n "$f" ]; do
 			if [[ "$username" == "$f" ]]; then
-				printf "%s\n" "${RED}That username already exists! Try another one.${normal}"
+				printf "%s\n" "${RED}That username already exists! Try another one.${NORMAL}"
 				return 16
 			else
 				useradd -m "$username"
