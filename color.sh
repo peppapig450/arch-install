@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ $(tput colors) -eq 256 ]; then 
+  continue
+else 
+  export TERM=xterm-256color ; reset
+fi 
+
 BLACK=$(tput setaf 0)
 RED=$(tput setaf 1)
 GREEN=$(tput setaf 2)
