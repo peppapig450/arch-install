@@ -1,20 +1,12 @@
 #!/usr/bin/env bash
 
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-NC='\033[0m'
-RED='\033[0;31m'
-PURPLE='\033[1;35m'
-CYAN='\033[0;36m'
-PURP='\033[0;35m'
-CY='\033[1;35m'
-LG='\033[1;32m'
+. color.sh 
 
 title() {
   clear
-  echo -e ${RED}"==========================="${NC}
-  echo -e ${LG}"Installing an AUR Helper"${NC}
-  echo -e ${RED}"==========================="${NG}
+  printf '%s\n' ${BLUE}"==========================="${NORMAL}
+  printf '%s\n' ${YELLOW}"Installing an AUR Helper"${NORMAL}
+  printf '%s\n' ${BLUE}"==========================="${NORMAL}
 }
 
 ask() {
