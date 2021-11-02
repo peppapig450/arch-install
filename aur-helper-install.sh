@@ -50,11 +50,12 @@ function aura() {
     if ask "Do you want to install Aura?"; then
         git clone https://aur.archlinux.org/aura.git
         cd aura/
-        makepkg -sri --noconfirm
+        makepkg -sri --noconfirm 
     else 
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
-        title
+        title 
+        menu
     fi
 }
 
@@ -68,6 +69,7 @@ function pakku() {
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
         title
+        menu
     fi
 }
 
@@ -76,11 +78,12 @@ function paru() {
     if ask "Do you want to install Paru?"; then
         git clone https://aur.archlinux.org/paru.git 
         cd paru/ 
-        makepkg -sri --noconfirm
+        makepkg -sri --noconfirm 
     else
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
         title
+        menu
     fi
 }
 
@@ -89,11 +92,12 @@ function pikaur() {
     if ask "Do you want to install Pikaur?"; then
         git clone https://aur.archlinux.org/pikaur.git 
         cd pikaur/ 
-        makepkg -sri --noconfirm
+        makepkg -sri --noconfirm 
     else 
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
         title
+        menu
     fi
 }
 
@@ -107,6 +111,7 @@ function trizen() {
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
         title
+        menu
     fi
 }
 
@@ -115,11 +120,12 @@ function yay() {
     if ask "Do you want to install Yay?"; then
         git clone https://aur.archlinux.org/yay.git 
         cd yay/ 
-        makepkg -sri --noconfirm
+        makepkg -sri --noconfirm 
     else
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
         title
+        menu
     fi
 }
 
@@ -134,16 +140,16 @@ menu() {
   ${GREEN}0)${NORMAL} ${CYAN}Exit${NORMAL} "
       read a
       case $a in
-        1) aura ; menu ;;
-        2) pakku ; menu ;;
-        3) paru ; menu ;;
-        4) pikaur ; menu ;;
-        5) trizen ; menu ;;
-        6) yay ; menu ;;
+        1) aura ;;
+        2) pakku ;;
+        3) paru ;;
+        4) pikaur ;;
+        5) trizen ;;
+        6) yay ;;
         0) exit 0 ;;
-        *) printf "%s\n" ${RED}"Invalid option."${NORMAL}
+        *) printf "%s\n" "${RED}Invalid option.${NORMAL}"
       esac
 }
 
-title
+title 
 menu
