@@ -105,25 +105,28 @@ else
 		printf 'Found Nvidia GPU, installing drivers...'
 		pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
 	elif [[ $(lshw -C display | grep vendor) =~ 'Advanced Micro Devices' ]]; then
-		printf 'Found AMD GPU, installing drivers...'
+		printf '%s\n' "${MAGENTA}Installing amd gpu drivers"
 		pacman -S --noconfirm xf86-video-amdgpu
 	elif [[ $(lshw -C display | grep vendor) =~ Intel ]]; then
-		printf 'Found Intel GPU, installing drivers...'
+		printf '%s\n' "${MAGENTA}Installing intel gpu drivers${NORMAL}"
+		sleep 1
 		pacman -S --noconfirm mesa
 	else
-		printf 'No GPU found'
+		printf '%s\n' "${RED}${UNDERLINE}No GPU found${NORMAL}"
 	fi
 fi
 
 if [[ -z $(systemd-detect-virt) ]]; then
 	if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
-		printf 'Found Intel CPU installing intel-ucode\n'
+		printf '%s\n' "${CYAN}Installing intel-ucode${NORMAL}"
+		sleep 1
 		pacman -S --noconfirm intel-ucode
 	elif [[ $(lscpu | grep Vendor) =~ AMDisbetter! ]] || [[ $(lscpu | grep Vendor) =~ AuthenticAMD ]]; then
-		printf 'Found AMD CPU installing amd-ucode\n'
+		printf '%s\n' "${CYAN}Installing amd-ucode${NORMAL}"
+		sleep 1
 		pacman -S --noconfirm amd-ucode
 	else
-		printf 'No cpu found... or other error\n'
+		printf '%s\n' "${RED}${UNDERLINE}No cpu found${NORMAL}"
 	fi
 fi
 
