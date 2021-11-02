@@ -51,7 +51,7 @@ setupass() {
 			else
 				useradd -m "$username"
 				usermod -aG wheel "$username"
-				printf "${username}:${userpass}" | chpaswd
+				printf "${username}:${userpass}" | chpasswd
 				return 0
 			fi
 		done
