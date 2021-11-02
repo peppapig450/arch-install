@@ -1,8 +1,6 @@
 #!/bin/sh
 
-if [ $(tput colors) -eq 256 ]; then 
-  continue
-else 
+if [ $(tput colors) -ne 256 ]; then  
   export TERM=xterm-256color ; reset
 fi 
 
