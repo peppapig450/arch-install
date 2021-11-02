@@ -48,7 +48,9 @@ ask() {
 function aura() {
     printf "%s\n" "${BLUE}Aura is an AUR helper written in Haskell that has no file review and partial diff view.${NORMAL}"
     if ask "Do you want to install Aura?"; then
-        git clone https://aur.archlinux.org/aura.git && cd aura/ && makepkg -sri --noconfirm
+        git clone https://aur.archlinux.org/aura.git
+        cd aura/
+        makepkg -sri --noconfirm
     else 
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
@@ -59,7 +61,9 @@ function aura() {
 function pakku() {
     printf "%s\n" "${BLUE}Pakku is an AUR helper written in Nim.${NORMAL}"
     if ask "Do you want to install Pakku?"; then
-        git clone https://aur.archlinux.org/pakku-git.git && cd paku-git/ && makepkg -sri --noconfirm
+        git clone https://aur.archlinux.org/pakku-git.git 
+        cd paku-git/ 
+        makepkg -sri --noconfirm
     else
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
@@ -70,7 +74,9 @@ function pakku() {
 function paru() {
     printf "%s\n" "${BLUE}Paru is an AUR helper written in Rust.${NORMAL}"
     if ask "Do you want to install Paru?"; then
-        git clone https://aur.archlinux.org/paru.git && cd paru/ && makepkg -sri --noconfirm
+        git clone https://aur.archlinux.org/paru.git 
+        cd paru/ 
+        makepkg -sri --noconfirm
     else
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
@@ -81,7 +87,9 @@ function paru() {
 function pikaur() {
     printf "%s\n" "${BLUE}Pikaur is an AUR helper written in Python.${NORMAL}"
     if ask "Do you want to install Pikaur?"; then
-        git clone https://aur.archlinux.org/pikaur.git && cd pikaur/ && makepkg -sri --noconfirm
+        git clone https://aur.archlinux.org/pikaur.git 
+        cd pikaur/ 
+        makepkg -sri --noconfirm
     else 
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
@@ -92,7 +100,9 @@ function pikaur() {
 function trizen() {
     printf "%s\n" "${BLUE}Trizen in an AUR helper written in Perl that has partial split package support.${NORMAL}"
     if ask "Do you want to install Trizen?"; then
-        git clone https://aur.archlinux.org/trizen.git && cd trizen/ && makepkg -sri --noconfirm
+        git clone https://aur.archlinux.org/trizen.git 
+        cd trizen/ 
+        makepkg -sri --noconfirm
     else
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
@@ -103,7 +113,9 @@ function trizen() {
 function yay() {
     printf "%s\n" "${BLUE}Yay is an AUR helper written in Go.${NORMAL}"
     if ask "Do you want to install Yay?"; then
-        git clone https://aur.archlinux.org/yay.git && cd yay/ && makepkg -sri --noconfirm
+        git clone https://aur.archlinux.org/yay.git 
+        cd yay/ 
+        makepkg -sri --noconfirm
     else
         printf "%s\n" "${BLUE}Okay returning to the menu${NORMAL}"
         sleep 1
@@ -113,13 +125,13 @@ function yay() {
 
 menu() {
   printf "%s\n" "
-  ${GREEN}1)${NORMAL} ${PURPLE}Aura${NC}
-  ${GREEN}2)${NORMAL} ${PURPLE}Pakku${NC}
-  ${GREEN}3)${NORMAL} ${PURPLE}Paru${NC}
-  ${GREEN}4)${NORMAL} ${PURPLE}Pikaur${NC}
-  ${GREEN}5)${NORMAL} ${PURPLE}Trizen${NC}
-  ${GREEN}6)${NORMAL} ${PURPLE}Yay${NC}
-  ${GREEN}0)${NORMAL} ${CYAN}Exit${NC} "
+  ${GREEN}1)${NORMAL} ${PURPLE}Aura${NORMAL}
+  ${GREEN}2)${NORMAL} ${PURPLE}Pakku${NORMAL}
+  ${GREEN}3)${NORMAL} ${PURPLE}Paru${NORMAL}
+  ${GREEN}4)${NORMAL} ${PURPLE}Pikaur${NORMAL}
+  ${GREEN}5)${NORMAL} ${PURPLE}Trizen${NORMAL}
+  ${GREEN}6)${NORMAL} ${PURPLE}Yay${NORMAL}
+  ${GREEN}0)${NORMAL} ${CYAN}Exit${NORMAL} "
       read a
       case $a in
         1) aura ; menu ;;
