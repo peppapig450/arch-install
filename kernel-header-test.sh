@@ -1,7 +1,5 @@
 #!/bin/bash
 attempt1() {
-	set -x
-	set -v
 	var=$(uname -r | awk -F- '{print $2}')
 	if [[ "$var" =~ [0-9] ]]; then
 		header=$(uname -r | awk -F- '{print $3}')
