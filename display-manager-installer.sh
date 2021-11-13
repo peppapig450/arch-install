@@ -95,14 +95,12 @@ tbsm() {
     echo -e ${BLUE}"TBSM is a Bash session or application launcher with no ncurses or dialog depencies. Supports X and Wayland sessions."${NORMAL}
     if ask "Would you like to install tbsm?"; then
         "$aur" -S --noconfirm tbsm
-        if [[ -d /etc/X11/default-display-manager ]]; then
-          sudo systemctl disable $(awk -F/ '{print $4}' /etc/X11/default-display-manager)            fi
         if [[ $shell == 'bash' ]]; then
             echo '[[ $XDG_VTNR -le 2 ]] && tbsm' >> ~/.bash_profile;
         elif [[ $shell == 'zsh' ]]; then
             echo '[[ $XDG_VTNR -le 2 ]] && tbsm' >> ~/.zprofile;
-        else 
-            echo ' [[ $XDG_VTNR -le '
+        #else 
+        #    echo ' [[ $XDG_VTNR -le '
         fi
     else
         echo -e ${BLUE}"Okay returning to the menu"${NORMAL}
