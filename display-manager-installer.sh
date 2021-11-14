@@ -211,16 +211,16 @@ xdm() {
 
 menu() {
     echo -e "
-    ${GREEN}1)${NORMAL} ${PURPLE}CDM${NORMAL}          
-    ${GREEN}2)${NORMAL} ${PURPLE}Console TDM${NORMAL}
-    ${GREEN}3)${NORMAL} ${PURPLE}Ly${NORMAL}            
-    ${GREEN}4)${NORMAL} ${PURPLE}TBSM${NORMAL}
-    ${GREEN}5)${NORMAL} ${PURPLE}Entrance${NORMAL}      
-    ${GREEN}6)${NORMAL} ${PURPLE}GDM${NORMAL}
-    ${GREEN}7)${NORMAL} ${PURPLE}LightDM${NORMAL}       
-    ${GREEN}8)${NORMAL} ${PURPLE}LXDM${NORMAL}
-    ${GREEN}9)${NORMAL} ${PURPLE}SDDM${NORMAL}          
-    ${GREEN}10)${NORMAL} ${PURPLE}XDM${NORMAL}
+    ${GREEN}1)${NORMAL} ${MAGENTA}CDM${NORMAL}          
+    ${GREEN}2)${NORMAL} ${MAGENTA}Console TDM${NORMAL}
+    ${GREEN}3)${NORMAL} ${MAGENTA}Ly${NORMAL}            
+    ${GREEN}4)${NORMAL} ${MAGENTA}TBSM${NORMAL}
+    ${GREEN}5)${NORMAL} ${MAGENTA}Entrance${NORMAL}      
+    ${GREEN}6)${NORMAL} ${MAGENTA}GDM${NORMAL}
+    ${GREEN}7)${NORMAL} ${MAGENTA}LightDM${NORMAL}       
+    ${GREEN}8)${NORMAL} ${MAGENTA}LXDM${NORMAL}
+    ${GREEN}9)${NORMAL} ${MAGENTA}SDDM${NORMAL}          
+    ${GREEN}10)${NORMAL} ${MAGENTA}XDM${NORMAL}
     ${GREEN}0)${NORMAL} ${CYAN}Exit${NORMAL} "
         read a
         case $a in
