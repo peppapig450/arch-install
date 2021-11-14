@@ -1,5 +1,26 @@
 #!/usr/bin/env bash
 
+stty -echoctl 
+
+oldterm="$TERM"
+
+if [ $(tput colors) -ne 256 ]; then 
+  export TERM=xterm-256color ; reset 
+fi 
+
+control_c() {
+  tput setaf 1 
+  printf '\r%s' "SIGINT caught"
+  tput sgr0
+  sleep 1 
+  printf '\r%s' "Setting terminal back to what it was before..."
+  export TERM="$oldterm" ; reset 
+  exit 1
+
+}
+
+source color.sh 
+
 aur=$(find /usr/bin -type f | awk -F/ '/paru/ || /yay/ || /aura/ || /pacaur/ || /pakku/ || /trizen/ || /pikaur/ {print $4}')
 shell=$(grep "$USER" /etc/passwd | awk -F: '{print $7}' | sed 's@.*/@@')
 
@@ -203,20 +224,23 @@ menu() {
     ${GREEN}0)${NORMAL} ${CYAN}Exit${NORMAL} "
         read a
         case $a in
-          1) cdm ;;
-          2) ctdm ;;
-          3) ly ;;
-          4) tbsm ;;
-          5) entrance ;;
-          6) gdm  ;;
-          7) lightdm ;;
-          8) lxdm ;;
-          9) sddm ;;
-          10) xdm ;;
+          1) cdm ; exit 0;;
+          2) ctdm ; exit 0;;
+          3) ly ; exit 0;;
+          4) tbsm ; exit 0;;
+          5) entrance ; exit 0;;
+          6) gdm  ; exit 0;;
+          7) lightdm ; exit 0;;
+          8) lxdm ; exit 0;;
+          9) sddm ; exit 0;;
+          10) xdm ; exit 0;;
           0) exit 0 ;;
           *) echo -e ${RED}"Invalid option."${NORMAL}
         esac
 }
 
-title
-menu
+trap 'control_c' SIGINT 
+
+while true; do
+  title && menu 
+done 
