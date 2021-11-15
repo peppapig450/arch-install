@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ $(tput colors) -ne 256 ]; then
+if [ "$(tput colors)" -ne 256 ]; then
 	export TERM=xterm-256color
 	reset
 fi
@@ -63,20 +63,11 @@ setupass() {
 }
 
 kernel() {
-	var=$(uname -r | awk -F- '{print $2}')
-	if [[ "$var" == 'arch1' ]]; then
-		header=""
-	elif [[ "$var" =~ [0-9] ]]; then
-		header=$(uname -r | awk -F- '{print $3}')
-		if [[ "$header" =~ [0-9] ]]; then
-			header=$(uname -r | awk -F- '{print $4}')
+	pacman -Q | grep linux | awk -v pat="5" '$2 ~ pat {print $1}' | while read -r line; do
+		if [[ "$line" != *'headers'* ]]; then
+			pacman -S --noconfirm "$line"-headers
 		fi
-	fi
-	if [[ -z "$header" ]]; then
-		headers="linux-headers"
-	else
-		headers="linux-${header}-headers"
-	fi
+	done
 }
 
 ln -sf /usr/share/zoneinfo/America/Los_Angeles /etc/localtime
