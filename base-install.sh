@@ -87,7 +87,7 @@ until [ $? -eq 0 ]; do
 	setrpass
 done
 
-kernel && pacman -S --noconfirm "$headers"
+kernel
 
 pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio pulseaudio-alsa bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw man-db
 
