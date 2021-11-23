@@ -75,11 +75,9 @@ hwclock --systohc
 sed -i '177s/.//' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >>/etc/locale.conf
-read -p "What hostname would you like to use: " host
-echo ${host} >>/etc/hostname
-echo "127.0.0.1 localhost" >>/etc/hosts
-echo "::1       localhost" >>/etc/hosts
-echo "127.0.1.1 ${host}.localdomain ${host}" >>/etc/hosts
+read -p -r "What hostname would you like to use: " host
+echo "${host}" >>/etc/hostname
+printf '%s %s\n%s\t  %s\n%s %s %s\n' "127.0.0.1" "localhost" "::1" "localhost" "127.0.1.1" "arch.localdomain" "arch" >>/etc/hosts
 
 setrpass
 until [ $? -eq 0 ]; do
@@ -89,7 +87,7 @@ done
 
 kernel
 
-pacman -S --noconfirm grub networkmanager network-manager-applet dialog wpa_supplicant mtools dosfstools reflector base-devel avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio pulseaudio-alsa bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw man-db
+pacman -S --noconfirm grub networkmanager network-manager-applet e2fsprogs dialog wpa_supplicant mtools dosfstools reflector base-devel avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio pulseaudio-alsa  bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw  man-db
 
 if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
 	grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
