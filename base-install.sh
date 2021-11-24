@@ -159,4 +159,4 @@ done
 ln=$(awk '{ if ( ($2 == "%wheel" && $4 == "ALL")) print NR;}' /etc/sudoers)
 sed -i ''"$ln"'s/^#//' /etc/sudoers
 
-printf "\e[1;32mDone! Type exit, umount -a and reboot.\e[0m"
+printf '%s\n' "\e[1;32mDone! Type exit, umount -a and reboot.\e[0m"
