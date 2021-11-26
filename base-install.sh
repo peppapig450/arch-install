@@ -1,10 +1,14 @@
-#!/usr/bin/env bash
+#!/bin/bash 
+
+set -Eeuo pipefail 
+
 if [ "$(tput colors)" -ne 256 ]; then
 	export TERM=xterm-256color
 	reset
 fi
 
-. color.sh
+source color.sh
+
 # Define functions
 
 # function to set root password
@@ -87,14 +91,14 @@ done
 
 kernel
 
-pacman -S --noconfirm grub networkmanager network-manager-applet e2fsprogs dialog wpa_supplicant mtools dosfstools reflector base-devel avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils pulseaudio pulseaudio-alsa  bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld flatpak sof-firmware nss-mdns acpid os-prober ntfs-3g terminus-font lshw  man-db
+pacman -S --noconfirm grub networkmanager network-manager-applet e2fsprogs dialog wpa_supplicant mtools dosfstools reflector base-devel avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld sof-firmware nss-mdns acpid os-prober ntfs-3g lshw man-db man-pages texinfo
 
 if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
 	grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
 	grub-mkconfig -o /boot/grub/grub.cfg
 elif [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'gpt' ]]; then
 	pacman -S --noconfirm efibootmgr
-	grub-install --target=x86_64-efi --efi-directory=$(lsblk "-rno" name,mountpoint | awk -v pat="$(fdisk "-l" | awk '/EFI/*/\System/ { print $1 }' | sed 's|.*/||')" ' $0 ~ pat { print $2 }') --bootloader-id=GRUB
+        grub-install --target=x86_64-efi --efi-directory=$(findmnt | awk '/boot/ {print $2}') --bootloader-id=GRUB
 	grub-mkconfig -o /boot/grub/grub.cfg
 else
 	echo -e "${RED}""Something has gone wrong chief ¯\_(ツ)_/¯""${NC}"
