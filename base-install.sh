@@ -93,19 +93,21 @@ kernel
 
 pacman -S --noconfirm grub networkmanager network-manager-applet e2fsprogs dialog wpa_supplicant mtools dosfstools reflector base-devel avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld sof-firmware nss-mdns acpid os-prober ntfs-3g lshw man-db man-pages texinfo
 
+esp="$(awk '/fat/ {print $2}') /proc/mounts)"
+
 if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
 	grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
 	grub-mkconfig -o /boot/grub/grub.cfg
 elif [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'gpt' ]]; then
 	pacman -S --noconfirm efibootmgr
-        grub-install --target=x86_64-efi --efi-directory=$(findmnt | awk '/boot/ {print $2}') --bootloader-id=GRUB
+        grub-install --target=x86_64-efi --efi-directory="$esp" --bootloader-id=GRUB
 	grub-mkconfig -o /boot/grub/grub.cfg
 else
 	echo -e "${RED}""Something has gone wrong chief ¯\_(ツ)_/¯""${NC}"
 fi
 
 vmplat="$(systemd-detect-virt)"
-if [[ $(systemd-detect-virt) ]]; then
+if [[ -z "$vmplat" ]]; then
 	if [[ "$vmplat" == "vmware" ]]; then
 		pacman -S --noconfirm open-vm-tools gtkmm3
 		systemctl enable vmtoolsd
@@ -132,12 +134,14 @@ else
 	fi
 fi
 
+cpu=$(awk -F: '/vendor_id/ {print $2}' /proc/cpuinfo | tail-n1)
+
 if [[ -z $(systemd-detect-virt) ]]; then
-	if [[ $(lscpu | grep Vendor) =~ GenuineIntel ]]; then
+	if [[ ${cpu} =~ GenuineIntel ]]; then
 		printf '%s\n' "${CYAN}Installing intel-ucode${NORMAL}"
 		sleep 1
 		pacman -S --noconfirm intel-ucode
-	elif [[ $(lscpu | grep Vendor) =~ AMDisbetter! ]] || [[ $(lscpu | grep Vendor) =~ AuthenticAMD ]]; then
+	elif [[ ${cpu} =~ AMDisbetter! ]] || [[ ${cpu} =~ AuthenticAMD ]]; then
 		printf '%s\n' "${CYAN}Installing amd-ucode${NORMAL}"
 		sleep 1
 		pacman -S --noconfirm amd-ucode
