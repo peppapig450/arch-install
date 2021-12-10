@@ -21,10 +21,18 @@ control_c() {
 
 source color.sh 
 
-aur=$(find /usr/bin -type f | awk -F/ '/paru/ || /yay/ || /aura/ || /pacaur/ || /pakku/ || /trizen/ || /pikaur/ {print $4}')
-shell=$(grep "$USER" /etc/passwd | awk -F: '{print $7}' | sed 's@.*/@@')
+setvars() { 
+  local -n test
+  test=( paru yay aura pacaur pakku trizen pikaur )
+  for a in ${test[@]}; do       
+    if command -v "$a" > /dev/null 2>&1; then 
+      aur="$a"
+    fi 
+  done
+  shell=$(grep "$USER" /etc/passwd | awk -F: '{print $7}' | sed 's@.*/@@')
+}
 
-title() {
+title() { 
     clear
     echo -e ${RED}"============================="${NORMAL} 
     echo -e ${LIME_YELLOW}"Installing a Display Manager"${NORMAL}
