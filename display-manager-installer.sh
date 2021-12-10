@@ -32,6 +32,7 @@ setvars() {
   var=$(awk -F: "/$USER/"'{print $7}' /etc/passwd)
   shell="${var##*/}"
 }
+setvars
 
 title() { 
     clear
