@@ -150,13 +150,20 @@ if [[ -z $(systemd-detect-virt) ]]; then
 	fi
 fi
 
-systemctl enable NetworkManager
-systemctl enable sshd
-systemctl enable avahi-daemon
-systemctl enable reflector.timer
-systemctl enable fstrim.timer
-systemctl enable firewalld
-systemctl enable acpid
+serviceEnable() {
+	local -a services=( "NetworkManager" "sshd" "avahi-daemon" "reflector.timer" "fstrim.timer" "firewalld" "acpid" )
+	for s in "${services[@]}" do
+		systemctl enable "$s"
+	done 
+}
+serviceEnable
+#systemctl enable NetworkManager
+#systemctl enable sshd
+#systemctl enable avahi-daemon
+#systemctl enable reflector.timer
+#systemctl enable fstrim.timer
+#systemctl enable firewalld
+#systemctl enable acpid
 
 setupass
 until [ $? -eq 0 ]; do

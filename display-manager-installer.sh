@@ -22,14 +22,15 @@ control_c() {
 source color.sh 
 
 setvars() { 
-  local -n test
-  test=( paru yay aura pacaur pakku trizen pikaur )
-  for a in ${test[@]}; do       
+  local -a test
+  test=( "paru" "yay" "aura" "pacaur" "pakku" "trizen" "pikaur" )
+  for a in "${test[@]}"; do       
     if command -v "$a" > /dev/null 2>&1; then 
       aur="$a"
     fi 
   done
-  shell=$(grep "$USER" /etc/passwd | awk -F: '{print $7}' | sed 's@.*/@@')
+  var=$(awk -F: "/$USER/"'{print $7}' /etc/passwd)
+  shell="${var##*/}"
 }
 
 title() { 
