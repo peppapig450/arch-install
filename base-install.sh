@@ -93,39 +93,47 @@ kernel
 
 pacman -S --noconfirm grub networkmanager network-manager-applet e2fsprogs dialog wpa_supplicant mtools dosfstools reflector base-devel avahi xdg-user-dirs xdg-utils gvfs gvfs-smb nfs-utils inetutils dnsutils alsa-utils bash-completion openssh rsync acpi acpi_call openbsd-netcat iptables ipset firewalld sof-firmware nss-mdns acpid os-prober ntfs-3g lshw man-db man-pages texinfo
 
-esp="$(awk '/fat/ {print $2}') /proc/mounts)"
+grubInstall() {
+  local esp partTable
+  esp="$(awk '/fat/ {print $2}') /proc/mounts)"
+  partTable="$(fdisk "-l" | awk '/Disklabel/*/type:/ {print $3}')"
 
-if [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'dos' ]]; then
-	grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
-	grub-mkconfig -o /boot/grub/grub.cfg
-elif [[ $(fdisk "-l" | awk '/Disklabel/*/type:/ { print $3 }') == 'gpt' ]]; then
-	pacman -S --noconfirm efibootmgr
-        grub-install --target=x86_64-efi --efi-directory="$esp" --bootloader-id=GRUB
-	grub-mkconfig -o /boot/grub/grub.cfg
-else
-	echo -e "${RED}""Something has gone wrong chief ¯\_(ツ)_/¯""${NC}"
-fi
+  if [[ ${partTable} == 'dos' ]]; then
+	  grub-install --target=i386-pc $(fdisk "-l" | awk 'NR==1 { print $2 }' | tr -d :)
+	  grub-mkconfig -o /boot/grub/grub.cfg
+  elif [[ ${partTable} == 'gpt' ]]; then
+	  pacman -S --noconfirm efibootmgr
+          grub-install --target=x86_64-efi --efi-directory="$esp" --bootloader-id=GRUB
+  	  grub-mkconfig -o /boot/grub/grub.cfg
+  else
+	  echo -e "${RED}""Something has gone wrong chief ¯\_(ツ)_/¯""${NC}"
+  fi
+} 
+grubInstall
 
-vmplat="$(systemd-detect-virt)"
-if [[ -z "$vmplat" ]]; then
-	if [[ "$vmplat" == "vmware" ]]; then
-		pacman -S --noconfirm open-vm-tools gtkmm3
-		systemctl enable vmtoolsd
-		systemctl enable vmware-vmblock-fuse
-	elif [[ "$vmplat" == "oracle" ]]; then
-		pacman -S --noconfirm virtualbox-guest-utils
-		systemctl enable vboxservice
-	else
-		printf 'No virtual machine platform found\n'
-	fi
-else
-	if [[ $(lshw -C display | grep vendor) =~ Nvidia ]]; then
+virtGpu() {
+  local vmplat gpubrand
+  vmplat="$(systemd-detect-virt)"
+  gpubrand="$(lshw -C dispaly | grep vendor)"
+  if [[ -z "$vmplat" ]]; then
+	  if [[ "$vmplat" == "vmware" ]]; then
+		  pacman -S --noconfirm open-vm-tools gtkmm3
+		  systemctl enable vmtoolsd
+		  systemctl enable vmware-vmblock-fuse
+	  elif [[ "$vmplat" == "oracle" ]]; then
+		  pacman -S --noconfirm virtualbox-guest-utils
+		  systemctl enable vboxservice
+	  else
+		  printf '%s\n' 'No virtual machine platform found'
+	  fi
+  else
+	if [[ ${gpubrand} =~ Nvidia ]]; then
 		printf 'Found Nvidia GPU, installing drivers...'
 		pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
-	elif [[ $(lshw -C display | grep vendor) =~ 'Advanced Micro Devices' ]]; then
+	elif [[ ${gpubrand} =~ 'Advanced Micro Devices' ]]; then
 		printf '%s\n' "${MAGENTA}Installing amd gpu drivers"
 		pacman -S --noconfirm xf86-video-amdgpu
-	elif [[ $(lshw -C display | grep vendor) =~ Intel ]]; then
+	elif [[ ${gpubrand} =~ Intel ]]; then
 		printf '%s\n' "${MAGENTA}Installing intel gpu drivers${NORMAL}"
 		sleep 1
 		pacman -S --noconfirm mesa
@@ -133,11 +141,14 @@ else
 		printf '%s\n' "${RED}${UNDERLINE}No GPU found${NORMAL}"
 	fi
 fi
+}
+virtGpu 
 
-cpu=$(awk -F: '/vendor_id/ {print $2}' /proc/cpuinfo | tail-n1)
+microcode() {
+  local cpu=$(awk -F: '/vendor_id/ {print $2}' /proc/cpuinfo | tail -n1)
 
-if [[ -z $(systemd-detect-virt) ]]; then
-	if [[ ${cpu} =~ GenuineIntel ]]; then
+  if [[ -z $(systemd-detect-virt) ]]; then
+	  if [[ ${cpu} =~ GenuineIntel ]]; then
 		printf '%s\n' "${CYAN}Installing intel-ucode${NORMAL}"
 		sleep 1
 		pacman -S --noconfirm intel-ucode
@@ -148,11 +159,13 @@ if [[ -z $(systemd-detect-virt) ]]; then
 	else
 		printf '%s\n' "${RED}${UNDERLINE}No cpu found${NORMAL}"
 	fi
-fi
+  fi
+}
+microcode
 
 serviceEnable() {
 	local -a services=( "NetworkManager" "sshd" "avahi-daemon" "reflector.timer" "fstrim.timer" "firewalld" "acpid" )
-	for s in "${services[@]}" do
+	for s in "${services[@]}"; do
 		systemctl enable "$s"
 	done 
 }
