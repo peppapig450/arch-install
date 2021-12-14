@@ -79,7 +79,7 @@ hwclock --systohc
 sed -i '177s/.//' /etc/locale.gen
 locale-gen
 echo "LANG=en_US.UTF-8" >>/etc/locale.conf
-read -p -r "What hostname would you like to use: " host
+read -r -p "What hostname would you like to use: " host
 echo "${host}" >>/etc/hostname
 printf '%s %s\n%s\t  %s\n%s %s %s\n' "127.0.0.1" "localhost" "::1" "localhost" "127.0.1.1" "arch.localdomain" "arch" >>/etc/hosts
 
