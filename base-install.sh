@@ -95,7 +95,7 @@ pacman -S --noconfirm grub networkmanager network-manager-applet e2fsprogs dialo
 
 grubInstall() {
   local esp partTable
-  esp="$(awk '/fat/ {print $2}') /proc/mounts)"
+  esp="$(awk '/fat/ {print $2}' /proc/mounts)"
   partTable="$(fdisk "-l" | awk '/Disklabel/*/type:/ {print $3}')"
 
   if [[ ${partTable} == 'dos' ]]; then
@@ -114,7 +114,7 @@ grubInstall
 virtGpu() {
   local vmplat gpubrand
   vmplat="$(systemd-detect-virt)"
-  gpubrand="$(lshw -C dispaly | grep vendor)"
+  gpubrand="$(lshw -C display | grep vendor)"
   if [[ -z "$vmplat" ]]; then
 	  if [[ "$vmplat" == "vmware" ]]; then
 		  pacman -S --noconfirm open-vm-tools gtkmm3
