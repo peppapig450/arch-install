@@ -138,7 +138,7 @@ virtGpu() {
 		elif [[ $gpubrand =~ 'Advanced Micro Devices' ]]; then
 			echo -e "${MAGENTA}Installing AMD gpu drivers"
 			pacman -S --noconfirm xf86-video-amdgpu
-		elif [[ ${gpubrand} =~ Intel ]]; then
+		elif [[ $gpubrand =~ Intel ]]; then
 			echo -e "${MAGENTA}Installing Intel gpu drivers${NORMAL}"
 			pacman -S --noconfirm mesa
 		else
@@ -157,7 +157,7 @@ microcode() {
 		        echo -e "${CYAN}Installing intel-ucode${NORMAL}"
 			sleep 1
 			pacman -S --noconfirm intel-ucode
-		elif [[ ${cpu} =~ AMDisbetter! ]] || [[ $cpu =~ AuthenticAMD ]]; then
+		elif [[ $cpu =~ AMDisbetter! ]] || [[ $cpu =~ AuthenticAMD ]]; then
 			echo -e "${CYAN}Installing amd-ucode${NORMAL}"
 			sleep 1
 			pacman -S --noconfirm amd-ucode
