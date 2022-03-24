@@ -23,7 +23,7 @@ setrpass() {
     echo -e "${RED}Either one or both of the passwords were empty, please try again.${NORMAL}"
     sleep 4
     return 5
-  elif [[ $rootpass != $rootpass2 ]]; then
+  elif [[ $rootpass != "$rootpass2" ]]; then
     echo 'The passwords do not match, please try again.'
     sleep 4
     return 5
@@ -49,13 +49,13 @@ setupass() {
     printf "%s\n" "${RED}The username is empty, please make sure to type something!${NORMAL}"
     sleep 4
     return 5
-  elif [[ $userpass != $userpass2 ]]; then
+  elif [[ $userpass != "$userpass2" ]]; then
     printf "%s\n" "${RED}The passwords do not match, please try again.${NORMAL}"
     sleep 4
     return 5
   else
-    awk -F: '{print $1}' /etc/passwd | while IFS="" read -r f || [ -n "$f" ]; do
-      if [[ $username = $f ]]; then
+    while IFS="" read -r f || [[ -n "$f" ]]; do
+      if [[ $username = "$f" ]]; then
         printf "%s\n" "${RED}That username already exists! Try another one.${NORMAL}"
         return 5
       else
@@ -64,7 +64,7 @@ setupass() {
         echo -n "${username}:${userpass}" | chpasswd
         return 0
       fi
-    done
+    done < <(awk -F':' '{print $1}' /etc/passwd)
   fi
 }
 
